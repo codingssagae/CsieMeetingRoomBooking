@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>내 예약 목록 | 회의실 예약 시스템</title>
+  <!-- 필요한 CSS 및 JS 파일들 -->
+</head>
+<body>
+<div class="container">
+  <h1>내 예약 목록</h1>
+  <table>
+    <thead>
+    <tr>
+      <th>예약 ID</th>
+      <th>시작 시간</th>
+      <th>종료 시간</th>
+      <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="reservation : ${myReservations}">
+      <td th:text="${reservation.id}">1</td>
+      <td th:text="${#dates.format(reservation.startTime, 'yyyy-MM-dd HH:mm')}">시작 시간</td>
+      <td th:text="${#dates.format(reservation.endTime, 'yyyy-MM-dd HH:mm')}">종료 시간</td>
+      <td>
+        <form th:action="@{'/reservation/delete/' + ${reservation.id}}" method="post">
+          <button type="submit" class="btn btn-danger">삭제</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

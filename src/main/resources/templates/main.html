@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지 | 회의실 예약 시스템</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            margin-top: 60px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-custom {
+            width: 200px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .card.slide-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .card.slide-out-left {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+
+        .card.slide-out-right {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .card-title-date {
+            font-size: 1.75rem;
+            font-weight: bold;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .navigation-buttons .btn {
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .reservation-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .reservation-item {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .reservation-item:hover {
+            background-color: #eef5ff;
+        }
+
+        .reservation-item .time {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .reservation-item .name {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .no-reservations {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        /* 로고 스타일 */
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">회의실 예약 시스템</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a th:href="@{/}" class="nav-link">로그아웃</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 메인 컨텐츠 -->
+<div class="container mt-4" id="content-container">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <!-- 로고 이미지 -->
+            <img th:src="@{/csieLogo.png}" alt="컴퓨터정보공학부 로고" class="logo">
+            <h1>회의실 예약 현황</h1>
+        </div>
+    </div>
+
+    <!-- 날짜 이동 버튼 -->
+    <div class="row mb-4">
+        <div class="col navigation-buttons">
+            <a id="prevDateBtn" th:href="@{/main(date=${previousDate})}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left-circle"></i> 이전 날짜
+            </a>
+            <a id="nextDateBtn" th:href="@{/main(date=${nextDate})}" class="btn btn-outline-primary">
+                다음 날짜 <i class="bi bi-arrow-right-circle"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 선택한 날짜의 예약 현황 카드 -->
+    <div class="row">
+        <div class="col">
+            <div class="card slide-in" id="reservation-card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="card-title-date" th:text="${selectedDate}"></h5>
+                </div>
+                <div class="card-body">
+                    <ul class="reservation-list">
+                        <!-- 예약자 이름과 예약 시간 출력 -->
+                        <li th:each="detail : ${reservationDetails}" class="reservation-item">
+                            <div class="time" th:text="${detail.time}"></div>
+                            <div class="name" th:text="'예약자: ' + ${detail.name}"></div>
+                        </li>
+
+                        <!-- 예약 시간이 없을 경우 표시 -->
+                        <li th:if="${#lists.isEmpty(reservationDetails)}" class="no-reservations">예약이 없습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 예약 관련 버튼 -->
+    <div class="row mt-4">
+        <div class="col text-center">
+            <a th:href="@{/reservation/my}" class="btn btn-primary btn-custom me-3">
+                <i class="bi bi-list-check"></i> 내 예약 확인 및 삭제
+            </a>
+            <a th:href="@{/reservation/new}" class="btn btn-success btn-custom">
+                <i class="bi bi-plus-circle"></i> 예약 신청하기
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery for animation -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- JavaScript for alert -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        // 성공 또는 오류 메시지를 서버에서 받아서 alert로 표시
+        var message = /*[[${message}]]*/ ''; // 성공 메시지
+        var errorMessage = /*[[${errorMessage}]]*/ ''; // 오류 메시지
+
+        if (message) {
+            alert(message); // 성공 메시지 알림창으로 표시
+        }
+
+        if (errorMessage) {
+            alert(errorMessage); // 오류 메시지 알림창으로 표시
+        }
+    });
+    /*]]>*/
+</script>
+<!-- 애니메이션 및 동적 페이지 전환 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 카드 애니메이션 적용
+        setTimeout(function() {
+            $('#reservation-card').addClass('slide-in');
+        }, 100);
+
+        // 날짜 이동 시 카드 전환 애니메이션
+        $('#prevDateBtn, #nextDateBtn').on('click', function(e) {
+            e.preventDefault();
+            var href = $(this).attr('href');
+            var direction = $(this).is('#nextDateBtn') ? 'left' : 'right';
+            var oppositeDirection = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
+
+            // 카드가 슬라이드 아웃
+            $('#reservation-card').addClass(oppositeDirection);
+            setTimeout(function() {
+                window.location.href = href;
+            }, 500);
+        });
+    });
+</script>
+
+</body>
+</html>
