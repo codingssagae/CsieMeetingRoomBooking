@@ -7,22 +7,183 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Flatpickr for Date/Time Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Custom CSS -->
     <style>
         body {
-            margin-top: 60px;
-            background-color: #ffffff; /* 배경을 흰색으로 변경 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            font-family: 'Arial', sans-serif;
         }
+
+        /* 컨텐츠 박스 */
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin-top: 80px;
+            margin-bottom: 40px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+        }
+
+        h1 {
+            color: #343a40;
+            font-weight: bold;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
         .form-label {
             font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
         }
-        .btn-custom {
-            width: 150px;
+
+        /* Flatpickr input 스타일 */
+        .form-control.flatpickr-input {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ced4da;
             font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* 커스텀 드롭다운 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .dropdown-toggle {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 선택된 옵션 스타일 */
+        .dropdown-toggle .selected-option {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        /* 버튼 스타일 */
+        .btn-custom {
+            font-size: 18px;
+            padding: 10px 30px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-4px);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        /* 로고 스타일 */
         .logo {
             display: block;
-            margin: 0 auto 20px auto; /* 가운데 정렬 및 아래쪽 여백 추가 */
+            margin: 0 auto 20px;
+            max-width: 120px;
+        }
+
+        /* 푸터 */
+        footer {
+            background-color: transparent;
+            color: #343a40;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: auto;
+            bottom: 0;
+        }
+
+        /* 미디어 쿼리 */
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+
+            .btn-custom {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -31,10 +192,9 @@
 <!-- 헤더 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">회의실 예약 시스템</a>
+        <a class="navbar-brand" href="/main">회의실 예약 시스템</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -48,43 +208,50 @@
 </nav>
 
 <!-- 메인 컨텐츠 -->
-<div class="container mt-4">
+<div class="container">
     <div class="row mb-4">
         <div class="col text-center">
+            <!-- 로고 이미지 -->
+            <img th:src="@{/csieLogo.png}" alt="컴퓨터정보공학부 로고" class="logo">
             <h1>회의실 예약 신청</h1>
         </div>
     </div>
 
     <!-- 예약 폼 -->
     <div class="row">
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-8 offset-md-2">
             <form id="reservationForm" th:action="@{/reservation/new}" method="post">
                 <!-- 예약 날짜 선택 -->
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="reservationDate" class="form-label">예약 날짜</label>
-                    <input type="date" class="form-control" id="reservationDate" name="reservationDate" required>
+                    <input type="text" class="form-control flatpickr-input" id="reservationDate" name="reservationDate" required>
                 </div>
 
                 <!-- 예약 시간 선택 (1시간 단위로 끊어서 선택) -->
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="startTime" class="form-label">예약 시간 (1시간 단위)</label>
-                    <select class="form-select" id="startTime" name="startTime" required>
-                        <option value="">시간 선택</option>
-                        <option value="09:00">09:00 - 10:00</option>
-                        <option value="10:00">10:00 - 11:00</option>
-                        <option value="11:00">11:00 - 12:00</option>
-                        <option value="12:00">12:00 - 13:00</option>
-                        <option value="13:00">13:00 - 14:00</option>
-                        <option value="14:00">14:00 - 15:00</option>
-                        <option value="15:00">15:00 - 16:00</option>
-                        <option value="16:00">16:00 - 17:00</option>
-                        <option value="17:00">17:00 - 18:00</option>
-                    </select>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" id="dropdownMenuButton">
+                            <span class="selected-option">시간 선택</span>
+                        </div>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="dropdown-item" data-value="09:00">09:00 - 10:00</div>
+                            <div class="dropdown-item" data-value="10:00">10:00 - 11:00</div>
+                            <div class="dropdown-item" data-value="11:00">11:00 - 12:00</div>
+                            <div class="dropdown-item" data-value="12:00">12:00 - 13:00</div>
+                            <div class="dropdown-item" data-value="13:00">13:00 - 14:00</div>
+                            <div class="dropdown-item" data-value="14:00">14:00 - 15:00</div>
+                            <div class="dropdown-item" data-value="15:00">15:00 - 16:00</div>
+                            <div class="dropdown-item" data-value="16:00">16:00 - 17:00</div>
+                            <div class="dropdown-item" data-value="17:00">17:00 - 18:00</div>
+                        </div>
+                        <input type="hidden" id="startTime" name="startTime">
+                    </div>
                 </div>
 
-                <!-- 버튼들 -->
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-success btn-custom me-3">
+                <!-- 예약 확인 및 취소 버튼 -->
+                <div class="text-center">
+                    <button type="button" class="btn btn-success btn-custom me-3" id="submitBtn">
                         <i class="bi bi-check-circle"></i> 예약 확인
                     </button>
                     <a href="/main" class="btn btn-secondary btn-custom">
@@ -96,8 +263,78 @@
     </div>
 </div>
 
+<!-- 푸터 -->
+<footer>
+    <p>&copy; 2024 컴퓨터정보공학부. All Rights Reserved.</p>
+</footer>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+<!-- JavaScript for alert -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
+        // 성공 또는 오류 메시지를 서버에서 받아서 alert로 표시
+        var errorMessage = /*[[${errorMessage}]]*/ ''; // 오류 메시지
+
+        if (errorMessage) {
+            alert(errorMessage); // 오류 메시지 알림창으로 표시
+        }
+    });
+    /*]]>*/
+</script>
+
+<!-- Custom JS -->
+<script>
+    // Flatpickr 한글 설정 및 기본 오늘 날짜로 설정, 오늘 이전 날짜 비활성화
+    flatpickr("#reservationDate", {
+        locale: "ko",
+        dateFormat: "Y-m-d", // 'yyyy-MM-dd' 형식으로 설정
+        defaultDate: "today",
+        minDate: "today",
+        enableTime: false
+    });
+
+
+    // 커스텀 드롭다운 기능
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const selectedOption = document.querySelector('.selected-option');
+    const hiddenInput = document.querySelector('#startTime');
+    const submitBtn = document.querySelector('#submitBtn');
+    const reservationForm = document.querySelector('#reservationForm');
+
+    dropdownToggle.addEventListener('click', function () {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    dropdownMenu.addEventListener('click', function (e) {
+        if (e.target.classList.contains('dropdown-item')) {
+            const value = e.target.getAttribute('data-value'); // HH:mm 형식의 값을 가져옴
+            selectedOption.textContent = e.target.textContent;
+            hiddenInput.value = value; // 선택된 시간을 hidden input에 저장
+            dropdownMenu.classList.remove('show');
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+        }
+    });
+
+    // 예약 확인 버튼 클릭 시 시간 선택 여부 검증
+    submitBtn.addEventListener('click', function () {
+        if (!hiddenInput.value) {
+            alert("시간을 선택하세요.");
+        } else {
+            reservationForm.submit(); // 시간이 선택된 경우 폼 제출
+        }
+    });
+</script>
 
 </body>
 </html>

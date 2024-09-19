@@ -6,10 +6,13 @@ import com.csie.csieBooking.domain.Reservation;
 import com.csie.csieBooking.exception.ReservationConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,4 +53,12 @@ public class ReservationService {
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
         return reservationRepository.findByStartTimeBetween(startOfDay, endOfDay);
     }
+
+    @Transactional
+    public void deleteReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 예약이 존재하지 않습니다."));
+        reservationRepository.delete(reservation);
+    }
+
 }
